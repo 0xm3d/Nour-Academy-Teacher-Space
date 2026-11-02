@@ -37,28 +37,28 @@
             <p class="text-sm text-muted">Today's session</p>
             <h1 class="font-serif text-3xl md:text-4xl">Take attendance</h1>
           </div>
-          <p id="compteur" class="rounded-full bg-card px-3 py-1 text-sm text-muted ring-1 ring-line" aria-live="polite">15 students</p>
+          <p id="counter" class="rounded-full bg-card px-3 py-1 text-sm text-muted ring-1 ring-line" aria-live="polite">15 students</p>
         </div>
 
 
         <!-- Search bar style  -->
         <div class="mt-5 rounded-3xl bg-card p-2 shadow-sm ring-1 ring-line">
-          <label for="recherche" class="sr-only">Search for a student</label>
-          <input id="recherche" type="search" placeholder="Search for a student by first or last name…"
+          <label for="search" class="sr-only">Search for a student</label>
+          <input id="search" type="search" placeholder="Search for a student by first or last name…"
                  class="h-12 w-full bg-transparent px-4 outline-none placeholder:text-muted">
 
           <div class="flex flex-wrap gap-2 px-2 pb-1">
-            <label for="filtre-groupe" class="sr-only">Group</label>
-            <select id="filtre-groupe" class="h-11 min-w-0 flex-1 rounded-full bg-paper px-4 text-sm sm:flex-none">
+            <label for="group-filter" class="sr-only">Group</label>
+            <select id="group-filter" class="h-11 min-w-0 flex-1 rounded-full bg-paper px-4 text-sm sm:flex-none">
               <option value="">All groups</option>
-              <!-- The other options are created in JS from the "groupes" array -->
+              <!-- The other options are created in JS from the "groups" array -->
             </select>
 
-            <label for="tri" class="sr-only">Sort</label>
-            <select id="tri" class="h-11 min-w-0 flex-1 rounded-full bg-paper px-4 text-sm sm:flex-none">
+            <label for="sort" class="sr-only">Sort</label>
+            <select id="sort" class="h-11 min-w-0 flex-1 rounded-full bg-paper px-4 text-sm sm:flex-none">
               <option value="">Original order</option>
-              <option value="nom">Sort by name</option>
-              <option value="moyenne">Sort by average</option>
+              <option value="name">Sort by name</option>
+              <option value="average">Sort by average</option>
             </select>
           </div>
         </div>
@@ -71,60 +71,60 @@
             <span class="text-xl text-muted transition group-open:rotate-45">+</span>
           </summary>
 
-          <form id="form-eleve" novalidate class="grid gap-4 border-t border-line p-4 sm:grid-cols-2">
+          <form id="student-form" novalidate class="grid gap-4 border-t border-line p-4 sm:grid-cols-2">
 
 
             <!-- Example: VALID state -->
-            <div class="champ valide">
-              <label for="prenom" class="text-sm font-medium">First name</label>
-              <input id="prenom" name="prenom" type="text" autocomplete="off" aria-describedby="prenom-msg"
+            <div class="field valid">
+              <label for="first-name" class="text-sm font-medium">First name</label>
+              <input id="first-name" name="firstName" type="text" autocomplete="off" aria-describedby="first-name-msg"
                      class="mt-1 h-11 w-full rounded-xl border border-line bg-paper px-3 outline-none focus:border-brand">
-              <p id="prenom-msg" class="message mt-1 text-xs text-muted">Valid first name.</p>
+              <p id="first-name-msg" class="message mt-1 text-xs text-muted">Valid first name.</p>
             </div>
 
             <!-- Example: ERROR state -->
-            <div class="champ erreur">
-              <label for="nom" class="text-sm font-medium">Last name</label>
-              <input id="nom" name="nom" type="text" autocomplete="off" aria-describedby="nom-msg"
+            <div class="field error">
+              <label for="last-name" class="text-sm font-medium">Last name</label>
+              <input id="last-name" name="lastName" type="text" autocomplete="off" aria-describedby="last-name-msg"
                      class="mt-1 h-11 w-full rounded-xl border border-line bg-paper px-3 outline-none focus:border-brand">
-              <p id="nom-msg" class="message mt-1 text-xs text-muted">2 characters minimum: letters, spaces or hyphens.</p>
+              <p id="last-name-msg" class="message mt-1 text-xs text-muted">2 characters minimum: letters, spaces or hyphens.</p>
             </div>
 
-            <div class="champ">
-              <label for="groupe" class="text-sm font-medium">Group</label>
-              <select id="groupe" name="groupe" aria-describedby="groupe-msg"
+            <div class="field">
+              <label for="group" class="text-sm font-medium">Group</label>
+              <select id="group" name="group" aria-describedby="group-msg"
                       class="mt-1 h-11 w-full rounded-xl border border-line bg-paper px-3">
                 <option value="">Choose a group</option>
               </select>
-              <p id="groupe-msg" class="message mt-1 text-xs text-muted">Student's group.</p>
+              <p id="group-msg" class="message mt-1 text-xs text-muted">Student's group.</p>
             </div>
 
-            <div class="champ">
+            <div class="field">
               <label for="email" class="text-sm font-medium">Parent's email</label>
               <input id="email" name="email" type="email" autocomplete="off" aria-describedby="email-msg"
                      class="mt-1 h-11 w-full rounded-xl border border-line bg-paper px-3 outline-none focus:border-brand">
               <p id="email-msg" class="message mt-1 text-xs text-muted">Example: parent@mail.ma</p>
             </div>
 
-            <div class="champ">
-              <label for="telephone" class="text-sm font-medium">Parent's phone number</label>
-              <input id="telephone" name="telephone" type="tel" autocomplete="off" aria-describedby="telephone-msg"
+            <div class="field">
+              <label for="phone" class="text-sm font-medium">Parent's phone number</label>
+              <input id="phone" name="parentPhone" type="tel" autocomplete="off" aria-describedby="phone-msg"
                      class="mt-1 h-11 w-full rounded-xl border border-line bg-paper px-3 outline-none focus:border-brand">
-              <p id="telephone-msg" class="message mt-1 text-xs text-muted">06 / 07 or +212 6 / 7, then 8 digits.</p>
+              <p id="phone-msg" class="message mt-1 text-xs text-muted">06 / 07 or +212 6 / 7, then 8 digits.</p>
             </div>
 
-            <div class="champ">
+            <div class="field">
               <label for="code" class="text-sm font-medium">Temporary access code</label>
               <input id="code" name="code" type="password" autocomplete="new-password" aria-describedby="code-msg"
                      class="mt-1 h-11 w-full rounded-xl border border-line bg-paper px-3 outline-none focus:border-brand">
               <!-- Strength meter (B2) -->
-              <meter id="code-force" min="0" max="3" low="1.5" high="2.5" optimum="3" value="0" class="mt-2 h-2 w-full"></meter>
+              <meter id="code-strength" min="0" max="3" low="1.5" high="2.5" optimum="3" value="0" class="mt-2 h-2 w-full"></meter>
               <p id="code-msg" class="message mt-1 text-xs text-muted">8 characters min., 1 uppercase letter, 1 digit, 1 special character.</p>
             </div>
 
             <!-- Global form messages  -->
-            <p id="form-succes" class="rounded-xl bg-brand-soft p-3 text-sm text-ok sm:col-span-2" hidden>Student added successfully.</p>
-            <p id="form-erreur" class="rounded-xl bg-alert-soft p-3 text-sm text-alert sm:col-span-2" hidden>This group is full (15 students).</p>
+            <p id="form-success" class="rounded-xl bg-brand-soft p-3 text-sm text-ok sm:col-span-2" hidden>Student added successfully.</p>
+            <p id="form-error" class="rounded-xl bg-alert-soft p-3 text-sm text-alert sm:col-span-2" hidden>This group is full (15 students).</p>
 
             <button type="submit" class="h-11 rounded-full bg-ink px-6 font-medium text-white hover:bg-brand sm:col-span-2 sm:justify-self-end">
               Add the student
@@ -134,97 +134,11 @@
 
 
         <!-- Student list -->
-        <ul id="liste-eleves" class="mt-4 grid gap-3">
-
-          <!-- =====================================================
-               SAMPLE ROWS — to be DELETED from the HTML.
-               They show what creerLigne() must build
-               with createElement, textContent and classList.
-               ===================================================== -->
-
-          <!-- Normal row -->
-          <li class="rounded-2xl border border-line bg-card p-3" data-id="1">
-            <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
-
-              <button type="button" class="btn-fiche flex min-h-11 flex-1 items-center gap-3 text-left">
-                <span class="grid size-10 shrink-0 place-items-center rounded-full bg-brand-soft text-sm font-semibold text-brand">SA</span>
-                <span class="min-w-0 flex-1">
-                  <span class="block truncate font-medium">Sara Alaoui</span>
-                  <span class="block text-sm text-muted">1 absence</span>
-                </span>
-                <span class="font-serif text-xl">13,5 / 20</span>
-              </button>
-
-              <div class="flex gap-2">
-                <button type="button" class="btn-absent h-11 rounded-full border border-line px-3 sm:px-4 text-sm font-medium hover:bg-paper">Absent</button>
-                <label class="flex-1">
-                  <span class="sr-only">Grade out of 20</span>
-                  <input type="number" min="0" max="20" step="0.5" placeholder="Grade"
-                         class="h-11 w-full rounded-full border border-line bg-paper px-4 text-sm lg:w-24">
-                </label>
-                <button type="button" class="btn-note h-11 rounded-full bg-ink px-3 sm:px-4 text-sm font-medium text-white hover:bg-brand">Add the grade</button>
-              </div>
-            </div>
-            <p class="message mt-2 text-xs text-alert" hidden>The grade must be a number between 0 and 20.</p>
-          </li>
-
-          <!-- Row with no grade + rejected grade (message visible) -->
-          <li class="rounded-2xl border border-line bg-card p-3" data-id="2">
-            <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
-
-              <button type="button" class="btn-fiche flex min-h-11 flex-1 items-center gap-3 text-left">
-                <span class="grid size-10 shrink-0 place-items-center rounded-full bg-brand-soft text-sm font-semibold text-brand">YM</span>
-                <span class="min-w-0 flex-1">
-                  <span class="block truncate font-medium">Yassine Mansouri</span>
-                  <span class="block text-sm text-muted">0 absence</span>
-                </span>
-                <span class="font-serif text-xl">—</span>
-              </button>
-
-              <div class="flex gap-2">
-                <button type="button" class="btn-absent h-11 rounded-full border border-line px-3 sm:px-4 text-sm font-medium hover:bg-paper">Absent</button>
-                <label class="flex-1">
-                  <span class="sr-only">Grade out of 20</span>
-                  <input type="number" min="0" max="20" step="0.5" placeholder="Grade"
-                         class="h-11 w-full rounded-full border border-line bg-paper px-4 text-sm lg:w-24">
-                </label>
-                <button type="button" class="btn-note h-11 rounded-full bg-ink px-3 sm:px-4 text-sm font-medium text-white hover:bg-brand">Add the grade</button>
-              </div>
-            </div>
-            <p class="message mt-2 text-xs text-alert">The grade must be a number between 0 and 20.</p>
-          </li>
-
-          <!-- Row on ALERT: "alerte" class + visible badge -->
-          <li class="alerte rounded-2xl border border-line bg-card p-3" data-id="3">
-            <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
-
-              <button type="button" class="btn-fiche flex min-h-11 flex-1 items-center gap-3 text-left">
-                <span class="grid size-10 shrink-0 place-items-center rounded-full bg-alert text-sm font-semibold text-white">IB</span>
-                <span class="min-w-0 flex-1">
-                  <span class="block truncate font-medium">Imane Berrada</span>
-                  <span class="block text-sm text-muted">3 absences
-                    <span class="badge ml-1 whitespace-nowrap rounded-full bg-alert px-2 py-0.5 text-xs font-medium text-white">Notify parents</span>
-                  </span>
-                </span>
-                <span class="font-serif text-xl">9 / 20</span>
-              </button>
-
-              <div class="flex gap-2">
-                <button type="button" class="btn-absent h-11 rounded-full border border-line bg-card px-3 sm:px-4 text-sm font-medium hover:bg-paper">Absent</button>
-                <label class="flex-1">
-                  <span class="sr-only">Grade out of 20</span>
-                  <input type="number" min="0" max="20" step="0.5" placeholder="Grade"
-                         class="h-11 w-full rounded-full border border-line bg-card px-4 text-sm lg:w-24">
-                </label>
-                <button type="button" class="btn-note h-11 rounded-full bg-ink px-3 sm:px-4 text-sm font-medium text-white hover:bg-brand">Add the grade</button>
-              </div>
-            </div>
-            <p class="message mt-2 text-xs text-alert" hidden>The grade must be a number between 0 and 20.</p>
-          </li>
+        <ul id="student-list" class="mt-4 grid gap-3">
+          
         </ul>
 
-        <!-- No results  -->
-        <p id="aucun-resultat" class="mt-4 rounded-2xl border border-dashed border-line p-8 text-center text-muted" hidden>
+        <p id="no-results" class="mt-4 rounded-2xl border border-dashed border-line p-8 text-center text-muted" hidden>
           No student matches your search.
         </p>
 
@@ -233,55 +147,49 @@
 
 
     <!-- ==================== SIDE PANEL  ==================== -->
-    <aside class="border-t border-line p-4 md:overflow-y-auto md:border-t-0 md:border-l md:p-6" aria-labelledby="titre-bilan">
-      <h2 id="titre-bilan" class="text-xs font-semibold uppercase tracking-wider text-muted">Group summary</h2>
+    <aside class="border-t border-line p-4 md:overflow-y-auto md:border-t-0 md:border-l md:p-6" aria-labelledby="summary-title">
+      <h2 id="summary-title" class="text-xs font-semibold uppercase tracking-wider text-muted">Group summary</h2>
 
       <!-- Key figures -->
       <dl class="mt-3 grid grid-cols-3 gap-2">
         <div class="rounded-2xl bg-card p-3 ring-1 ring-line">
           <dt class="text-xs text-muted">Average</dt>
-          <dd id="bilan-moyenne" class="font-serif text-2xl">12,8</dd>
+          <dd id="summary-average" class="font-serif text-2xl">12,8</dd>
         </div>
         <div class="rounded-2xl bg-card p-3 ring-1 ring-line">
           <dt class="text-xs text-muted">Absences</dt>
-          <dd id="bilan-absences" class="font-serif text-2xl">17</dd>
+          <dd id="summary-absences" class="font-serif text-2xl">17</dd>
         </div>
         <div class="rounded-2xl bg-alert-soft p-3 ring-1 ring-alert/30">
           <dt class="text-xs text-alert">Alerts</dt>
-          <dd id="bilan-alertes" class="font-serif text-2xl text-alert">2</dd>
+          <dd id="summary-alerts" class="font-serif text-2xl text-alert">2</dd>
         </div>
       </dl>
 
-      <!-- Best average (B4) -->
       <div class="mt-3 flex items-center gap-3 rounded-2xl bg-brand-soft p-3">
         <span class="text-xl" aria-hidden="true">★</span>
         <p class="text-sm">
           <span class="block text-xs text-brand">Best average</span>
-          <span id="bilan-meilleur" class="font-medium">Rania Tazi — 17,5 / 20</span>
+          <span id="summary-best" class="font-medium">—</span>
         </p>
       </div>
 
-      <!-- Parents to call -->
       <h2 class="mt-6 text-xs font-semibold uppercase tracking-wider text-muted">Parents to call</h2>
 
-      <ul id="liste-parents" class="mt-3 grid gap-2 text-sm">
-        <!-- SAMPLES  -->
-        <li class="rounded-xl bg-card px-3 py-2 ring-1 ring-line">Imane Berrada — 0612345678</li>
-        <li class="rounded-xl bg-card px-3 py-2 ring-1 ring-line">Omar Fassi — 0698765432</li>
+      <ul id="parents-list" class="mt-3 grid gap-2 text-sm">
       </ul>
 
-      <!-- No student on alert -->
-      <p id="aucune-alerte" class="mt-3 rounded-xl bg-brand-soft p-3 text-sm text-ok" hidden>No students on alert.</p>
+      <p id="no-alerts" class="mt-3 rounded-xl bg-brand-soft p-3 text-sm text-ok" hidden>No students on alert.</p>
     </aside>
   </div>
 
 
   <!-- ==================== STUDENT RECORD  ====================-->
-  <dialog id="fiche" class="m-auto w-[min(28rem,calc(100%-2rem))] rounded-3xl bg-card p-6 text-ink backdrop:bg-ink/40">
+  <dialog id="record" class="m-auto w-[min(28rem,calc(100%-2rem))] rounded-3xl bg-card p-6 text-ink backdrop:bg-ink/40">
     <div class="flex items-start justify-between gap-4">
       <div>
-        <h2 id="fiche-nom" class="font-serif text-2xl">Sara Alaoui</h2>
-        <p id="fiche-groupe" class="text-sm text-muted">2nd Year Bac — Mathematics</p>
+        <h2 id="record-name" class="font-serif text-2xl"></h2>
+        <p id="record-group" class="text-sm text-muted"></p>
       </div>
       <form method="dialog">
         <button class="grid size-11 place-items-center rounded-full hover:bg-paper" aria-label="Close">✕</button>
@@ -289,11 +197,7 @@
     </div>
 
     <h3 class="mt-5 text-xs font-semibold uppercase tracking-wider text-muted">All grades</h3>
-    <ul id="fiche-notes" class="mt-2 flex flex-wrap gap-2">
-      <li class="rounded-full bg-paper px-3 py-1">14</li>
-      <li class="rounded-full bg-paper px-3 py-1">12,5</li>
-      <li class="rounded-full bg-paper px-3 py-1">14</li>
-    </ul>
+    <ul id="record-grades" class="mt-2 flex flex-wrap gap-2"></ul>
   </dialog>
 
 
