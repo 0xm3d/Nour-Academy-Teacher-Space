@@ -35,8 +35,16 @@ function createStudentCard(student) {
 
   // number of absences
   const absences = document.createElement('span');
+
+    if(student.absences.value >= 3) {
+     absences.classList.add("border", "border-solid", "border-red");
+  }
   absences.classList.add("block", "text-sm", "text-muted");
   absences.textContent = student.absences + ' absences';
+
+  if(student.absences >= 3) {
+     li.classList.add("border", "border-solid", "border-red-500");
+  }
 
   info.append(name, absences);
 
@@ -69,6 +77,9 @@ function createStudentCard(student) {
 // Create a card for each student and add them to the list
 const cards = students.map(createStudentCard);
 studentList.append(...cards);
+
+
+
 
 
 // add options to groups selector
