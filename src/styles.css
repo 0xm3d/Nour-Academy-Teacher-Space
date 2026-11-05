@@ -16,9 +16,11 @@
       --color-ok: #2f7d4f;          /* succès              */
     }
 
-    /* ---------- 2. États ajoutés / retirés par JavaScript (classList) ---------- */
-    .erreur input   { border-color: var(--color-alert); }
-    .erreur .message { color: var(--color-alert); }
-    .valide input   { border-color: var(--color-ok); }
-    .valide .message { color: var(--color-ok); }
+    /* Show field feedback when JavaScript marks a value valid or invalid. */
+    .field.error input,
+    .field.error select { border-color: var(--color-alert); }
+    .field.error .message { color: var(--color-alert); }
+    .field.valid input,
+    .field.valid select { border-color: var(--color-ok); }
+    .field.valid .message { color: var(--color-ok); }
     .alerte         { border-color: var(--color-alert); background-color: var(--color-alert-soft); }
