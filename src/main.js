@@ -7,7 +7,50 @@ const search = document.querySelector('#search');
 const groupFilter = document.querySelector('#group-filter');
 const studentCount = document.querySelector('#counter');
 const noResults = document.querySelector('#no-results');
+const studentForm = document.querySelector('#student-form');
+const formSuccess = document.querySelector('#form-success');
+const formError = document.querySelector('#form-error');
+const codeStrength = document.querySelector('#code-strength');
+const addStudentGroup = document.querySelector('#group');
+const fields = [...studentForm.querySelectorAll('.field')];
 
+const validators = {
+  'first-name': {
+    test: value => value.length >= 2 && /^[\p{L}][\p{L} -]*[\p{L}]$/u.test(value),
+    error: 'Use at least 2 letters, spaces or hyphens.',
+    success: 'First name looks good.'
+  },
+  'last-name': {
+    test: value => value.length >= 2 && /^[\p{L}][\p{L} -]*[\p{L}]$/u.test(value),
+    error: 'Use at least 2 letters, spaces or hyphens.',
+    success: 'Last name looks good.'
+  },
+  group: {
+    test: value => groups.some(group => group.id === Number(value)),
+    error: 'Choose a group.',
+    success: 'Group selected.'
+  },
+  email: {
+    test: value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+    error: 'Enter a valid email address.',
+    success: 'Email address looks good.'
+  },
+  phone: {
+    test: value => /^(?:0[67]\d{8}|\+212[67]\d{8})$/.test(value),
+    error: 'Use 06/07 or +212 6/7, followed by 8 digits.',
+    success: 'Phone number looks good.'
+  },
+  code: {
+    test: value => /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(value),
+    error: 'Use 8+ characters, including an uppercase letter, a number and a special character.',
+    success: 'Access code looks good.'
+  }
+};
+
+// Keep each field's short hint available when its value is cleared.
+fields.forEach(function (field) {
+  field.dataset.help = field.querySelector('.message').textContent;
+});
 
 // Create a card for one student
 function createStudentCard(student) {
@@ -139,6 +182,163 @@ groups.forEach(function (group) {
   option.textContent = group.name;
 
   groupFilter.append(option);
+
+  const formOption = option.cloneNode(true);
+  addStudentGroup.append(formOption);
+});
+
+function updateField(field, state, message) {
+  const input = field.querySelector('input, select');
+  const messageElement = field.querySelector('.message');
+
+  field.classList.remove('valid', 'error');
+
+  if (state === 'neutral') {
+    input.removeAttribute('aria-invalid');
+    messageElement.textContent = field.dataset.help;
+    return;
+  }
+
+  field.classList.add(state);
+  input.setAttribute('aria-invalid', state === 'error' ? 'true' : 'false');
+  messageElement.textContent = message;
+}
+
+function validateForm(showEmptyFields) {
+  const results = fields.map(function (field) {
+    const input = field.querySelector('input, select');
+    const value = input.value.trim();
+    const rule = validators[input.id];
+    const isValid = rule.test(value);
+
+    return {
+      field,
+      input,
+      value,
+      isValid,
+      message: isValid ? rule.success : rule.error
+    };
+  });
+
+  const firstName = results.find(result => result.input.id === 'first-name');
+  const lastName = results.find(result => result.input.id === 'last-name');
+  const groupResult = results.find(result => result.input.id === 'group');
+  let duplicate = false;
+  let groupIsFull = false;
+
+  if (firstName.isValid && lastName.isValid && groupResult.isValid) {
+    const groupId = Number(groupResult.value);
+    const normalizedFirstName = firstName.value.toLocaleLowerCase();
+    const normalizedLastName = lastName.value.toLocaleLowerCase();
+
+    duplicate = students.some(function (student) {
+      return student.groupId === groupId &&
+        student.firstName.toLocaleLowerCase() === normalizedFirstName &&
+        student.lastName.toLocaleLowerCase() === normalizedLastName;
+    });
+
+    groupIsFull = students.filter(student => student.groupId === groupId).length >= 15;
+
+    if (duplicate) {
+      groupResult.isValid = false;
+      groupResult.message = 'This student already exists in this group.';
+    } else if (groupIsFull) {
+      groupResult.isValid = false;
+      groupResult.message = 'This group already has 15 students.';
+    }
+  }
+
+  results.forEach(function (result) {
+    const hasValue = result.value !== '';
+    const wasChecked = result.field.classList.contains('valid') ||
+      result.field.classList.contains('error');
+
+    if (showEmptyFields || hasValue || wasChecked) {
+      updateField(result.field, result.isValid ? 'valid' : 'error', result.message);
+    } else {
+      updateField(result.field, 'neutral');
+    }
+  });
+
+  return {
+    isValid: results.every(result => result.isValid),
+    duplicate,
+    groupIsFull,
+    results
+  };
+}
+
+function updateCodeStrength() {
+  const value = document.querySelector('#code').value;
+  let score = 0;
+
+  if (value.length >= 8) score++;
+  if (/[A-Z]/.test(value)) score++;
+  if (/\d/.test(value) && /[^A-Za-z0-9]/.test(value)) score++;
+
+  codeStrength.value = score;
+}
+
+studentForm.addEventListener('input', function (event) {
+  formSuccess.hidden = true;
+  formError.hidden = true;
+  validateForm(false);
+
+  if (event.target.id === 'code') {
+    updateCodeStrength();
+  }
+});
+
+studentForm.addEventListener('change', function () {
+  formSuccess.hidden = true;
+  formError.hidden = true;
+  validateForm(false);
+});
+
+studentForm.addEventListener('submit', function (event) {
+  event.preventDefault();
+
+  const validation = validateForm(true);
+
+  if (!validation.isValid) {
+    const firstInvalid = validation.results.find(result => !result.isValid);
+
+    if (firstInvalid) {
+      firstInvalid.input.focus();
+    }
+
+    if (validation.duplicate || validation.groupIsFull) {
+      formError.textContent = validation.duplicate
+        ? 'This student already exists in this group.'
+        : 'This group is full (15 students).';
+      formError.hidden = false;
+    }
+
+    return;
+  }
+
+  const formData = new FormData(studentForm);
+
+  // Store the student details, but never keep the temporary access code.
+  students.push({
+    id: Math.max(0, ...students.map(student => student.id)) + 1,
+    firstName: formData.get('firstName').trim(),
+    lastName: formData.get('lastName').trim(),
+    groupId: Number(formData.get('group')),
+    parentEmail: formData.get('email').trim(),
+    parentPhone: formData.get('parentPhone').trim(),
+    absences: 0,
+    grades: []
+  });
+
+  studentForm.reset();
+  codeStrength.value = 0;
+  fields.forEach(field => updateField(field, 'neutral'));
+  search.value = '';
+  groupFilter.value = '';
+  formError.hidden = true;
+  formSuccess.hidden = false;
+  displayStudents();
 });
 
 
