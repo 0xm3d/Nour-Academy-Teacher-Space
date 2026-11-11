@@ -7,6 +7,12 @@ const search = document.querySelector('#search');
 const groupFilter = document.querySelector('#group-filter');
 const studentCount = document.querySelector('#counter');
 const noResults = document.querySelector('#no-results');
+const summaryAverage = document.querySelector('#summary-average');
+const summaryAbsences = document.querySelector('#summary-absences');
+const summaryAlerts = document.querySelector('#summary-alerts');
+const summaryBest = document.querySelector('#summary-best');
+const parentsList = document.querySelector('#parents-list');
+const noAlerts = document.querySelector('#no-alerts');
 const studentForm = document.querySelector('#student-form');
 const formSuccess = document.querySelector('#form-success');
 const formError = document.querySelector('#form-error');
@@ -279,6 +285,58 @@ function updateCodeStrength() {
   codeStrength.value = score;
 }
 
+function updateGroupSummary() {
+  const selectedGroup = groupFilter.value;
+  const groupStudents = students.filter(student =>
+    selectedGroup === '' || student.groupId === Number(selectedGroup)
+  );
+  const grades = groupStudents.reduce(function (result, student) {
+    return {
+      total: result.total + student.grades.reduce((sum, grade) => sum + grade, 0),
+      count: result.count + student.grades.length
+    };
+  }, { total: 0, count: 0 });
+  const totalAbsences = groupStudents.reduce(
+    (total, student) => total + student.absences,
+    0
+  );
+  const studentsOnAlert = groupStudents.filter(student => student.absences >= 3);
+
+  summaryAverage.textContent = grades.count === 0
+    ? '—'
+    : (grades.total / grades.count).toLocaleString('fr-FR', {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1
+    });
+  summaryAbsences.textContent = totalAbsences;
+  summaryAlerts.textContent = studentsOnAlert.length;
+
+  const bestStudent = groupStudents.reduce(function (best, student) {
+    if (student.grades.length === 0) return best;
+
+    const average = student.grades.reduce((sum, grade) => sum + grade, 0) /
+      student.grades.length;
+    return best === null || average > best.average ? { student, average } : best;
+  }, null);
+
+  summaryBest.textContent = bestStudent
+    ? bestStudent.student.firstName + ' ' + bestStudent.student.lastName +
+      ' · ' + bestStudent.average.toLocaleString('fr-FR', {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+      }) + ' / 20'
+    : '—';
+
+  parentsList.replaceChildren(...studentsOnAlert.map(function (student) {
+    const item = document.createElement('li');
+    item.className = 'rounded-xl bg-card p-3 ring-1 ring-line';
+    item.textContent = student.firstName + ' ' + student.lastName +
+      ' — ' + student.parentPhone;
+    return item;
+  }));
+  noAlerts.hidden = !groupStudents.every(student => student.absences < 3);
+}
+
 studentForm.addEventListener('input', function (event) {
   formSuccess.hidden = true;
   formError.hidden = true;
@@ -370,6 +428,7 @@ function displayStudents() {
   studentCount.textContent = filteredStudent.length + ' students';
 
   noResults.hidden = filteredStudent.length !== 0;
+  updateGroupSummary();
 }
 
 
@@ -423,6 +482,7 @@ studentList.addEventListener('click', function (event) {
 
   // Update only the concerned student
   li.replaceWith(createStudentCard(student));
+  updateGroupSummary();
 
 });
 
